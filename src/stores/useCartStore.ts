@@ -26,12 +26,21 @@ export const useCartStore = create<IAddCartItem>((set, get) => {
     const initialItems = storedItems ? JSON.parse(storedItems) : [];
     const userId = auth.currentUser?.uid;
     
+
+    console.log(storedItems);
+    console.log("initialItems", initialItems);
+    console.log(userId);
+    
     return {
+        cart : initialItems.items,
       userCartId : userId || null,
       createdAt : Date.now(),
-      items: initialItems.items,
+    //   items: initialItems.items,
       addItem: (item: ICartProduct) =>
           set((state) => {
+            // console.log(state.items);
+            // const {cart} = get();
+            // console.log(cart);
               const existingItemIndex = state.items.findIndex(
                   (existingItem) => existingItem.productId === item.productId
               );
@@ -52,7 +61,15 @@ export const useCartStore = create<IAddCartItem>((set, get) => {
           })),
       totalPrice: () =>
           get().items.reduce((total, item) => total + item.price * item.quantity, 0),
-      totalQuantity: () => get().items.reduce((quantity, item) => quantity + item.quantity, 0),
+      totalQuantity: () => {
+        const {cart} = get();
+        console.log(cart);
+        if(cart) {
+            return get().items.reduce((quantity, item) => quantity + item.quantity, 0);
+        }
+        return 0;
+    },
+      
     };
 });
 

@@ -22,6 +22,8 @@ const Header = () => {
     }
   };
 
+  console.log(quantity);
+
   useEffect(() => {
     setUser(currentUser);
   }, [currentUser]);
@@ -33,7 +35,7 @@ const Header = () => {
       </Link>
       <div className="">
         <Link to={"/cart"}>
-          Panier{quantity > 0 && <span>{quantity}</span>}
+          Panier{quantity && quantity > 0 && <span>{quantity}</span>}
         </Link>
       </div>
       {user ? (

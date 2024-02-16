@@ -9,13 +9,13 @@ import { Rating } from "react-simple-star-rating";
 const Products = () => {
   const addItem = useCartStore((state) => state.addItem);
   const [searchFilter, setSearchFilter] = useState("");
-  const [isHovered, setIsHovered] = useState(false);
+  // const [isHovered, setIsHovered] = useState(false);
   const [searchCategoryFilter, setSearchCategoryFilter] = useState("");
 
-  const style = {
-    transform: isHovered ? `translate(5px, 5px)` : "",
-    transition: `transform 0.3s`,
-  };
+  // const style = {
+  //   transform: isHovered ? `translate(5px, 5px)` : "",
+  //   transition: `transform 0.3s`,
+  // };
 
   const {
     data: productsFBDb,
@@ -122,9 +122,9 @@ const Products = () => {
               <li
                 key={productItem.id}
                 className="h-full w-full border border-rose-500 p-4"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                style={style}
+                // onMouseEnter={() => setIsHovered(true)}
+                // onMouseLeave={() => setIsHovered(false)}
+                // style={style}
               >
                 <Link
                   to={`/product/${productItem.id}`}
@@ -158,6 +158,7 @@ const Products = () => {
                       price: productItem.price,
                       quantity: 1,
                     };
+                    console.log(newItem);
                     addItem(newItem);
                   }}
                 >
