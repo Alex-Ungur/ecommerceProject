@@ -5,35 +5,38 @@ export interface Product {
     category: string
     description: string
     price: number
-    image: File
+    image: string
     promo: number
-    rating : {
-        count : number,
-        rate : number
-    }
+    rating : number
+    stock : number
+    // rating : {
+    //     count : number,
+    //     rate : number
+    // }
+    reduction : number
     title: string
   }
   
 
 
 
-export const getProducts = async () => {
-    const response = await fetch("https://fakestoreapi.com/products")
-    .then((res) => res.json())
-    .then((json) => (json))
-    .catch(error => console.error(error));
+// export const getProducts = async () => {
+//     const response = await fetch("https://fakestoreapi.com/products")
+//     .then((res) => res.json())
+//     .then((json) => (json))
+//     .catch(error => console.error(error));
 
-    return response;
-}
+//     return response;
+// }
 
 
-export const getProduct =async (id : string) => {
-    const response = await fetch(`https://fakestoreapi.com/products/${id}`)
-    .then((res) => res.json())
-    .then((json) => (json))
-    .catch(error => console.error(error));
-    return response;
-}
+// export const getProduct =async (id : string) => {
+//     const response = await fetch(`https://fakestoreapi.com/products/${id}`)
+//     .then((res) => res.json())
+//     .then((json) => (json))
+//     .catch(error => console.error(error));
+//     return response;
+// }
 
 export const getProductsFb = async () => {
 
@@ -60,21 +63,29 @@ export const getCategories = async () => {
 
     const categories = collection(db, "categories");
     const categoriesList = await getDocs(categories);
-    return (categoriesList.docs.map((category) => ({...category.data(), id : category.id})));
-
-    
+    return (categoriesList.docs.map((category) => ({...category.data(), id : category.id})));    
 }
 
 export const setProduct = async (data : Product) => {
     const setProductData = await addDoc(collection(db, "produits"), {
         category : data.category,
         description : data.description,
-        image : data.image.name,
+        image : data.image,
         price : data.price,
-        promo : data.promo,
-        rating : {count : data.rating.count, rate : data.rating.rate},
+        reduction : data.reduction,
+        rating : data.rating,
+        stock : data.stock,
+        // rating : {count : data.rating.count, rate : data.rating.rate},
         title : data.title
     });
 
     return setProductData;
+}
+
+export const setCart = async (id: string, data : Cart) => {
+    const setCartData = await addDoc(collection(db, "panier"), {
+
+    });
+
+    return setCartData;
 }

@@ -2,14 +2,20 @@ import { product } from "../App";
 import { Link } from "react-router-dom";
 import { useCartStore } from "../stores/useCartStore";
 import { useQuery } from "@tanstack/react-query";
-import { getProductsFb } from "../api/Products";
+import { Product, getProductsFb } from "../api/Products";
 import { useMemo, useState } from "react";
 import { Rating } from "react-simple-star-rating";
 
 const Products = () => {
   const addItem = useCartStore((state) => state.addItem);
   const [searchFilter, setSearchFilter] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
   const [searchCategoryFilter, setSearchCategoryFilter] = useState("");
+
+  const style = {
+    transform: isHovered ? `translate(5px, 5px)` : "",
+    transition: `transform 0.3s`,
+  };
 
   const {
     data: productsFBDb,
@@ -37,7 +43,7 @@ const Products = () => {
   const uniqueCategories: string[] = useMemo(() => {
     if (!productsFBDb) return [];
     const categories: string[] = [];
-    productsFBDb.forEach((productItem: product) => {
+    productsFBDb.forEach((productItem: Product) => {
       if (!categories.includes(productItem.category)) {
         categories.push(productItem.category);
       }
@@ -116,6 +122,9 @@ const Products = () => {
               <li
                 key={productItem.id}
                 className="h-full w-full border border-rose-500 p-4"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                style={style}
               >
                 <Link
                   to={`/product/${productItem.id}`}
@@ -129,9 +138,9 @@ const Products = () => {
                   <p>{productItem.title}</p>
                   <p>{productItem.price} $</p>
                   <p>{productItem.category}</p>
-                  {productItem.rating.rate != 0 && (
+                  {productItem.rating != 0 && (
                     <Rating
-                      initialValue={productItem.rating.rate}
+                      initialValue={productItem.rating}
                       readonly
                       allowFraction
                       size={25}

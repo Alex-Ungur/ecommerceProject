@@ -1,10 +1,10 @@
-import useLocalStorageUser from "../hooks/useLocalStorageUser";
+// import useLocalStorageUser from "../hooks/useLocalStorageUser";
 import Layout from "../layout";
 import { useCartStore } from "../stores/useCartStore";
 
 const Cart = () => {
-  const userId = useLocalStorageUser();
-  console.log(userId);
+  // const userId = useLocalStorageUser();
+  // console.log(userId);
   const cartList = useCartStore((state) => state.items);
   const totalPrice = useCartStore((state) => state.totalPrice());
 
@@ -16,7 +16,7 @@ const Cart = () => {
           <p>
             {cartList.map((cartItem) => (
               <>
-                <p key={cartItem.name}>{cartItem.name}</p>
+                <p key={cartItem.productId}>{cartItem.name}</p>
                 <img src={cartItem.image} className="max-w-[10rem]" />
                 <p>Quantité : {cartItem.quantity}</p>
                 <p>Prix unitaire : {cartItem.price} $</p>

@@ -4,12 +4,26 @@ import Layout from "../layout";
 import { getProductFb } from "../api/Products";
 import { useQuery } from "@tanstack/react-query";
 import { useCartStore } from "../stores/useCartStore";
+import { Rating } from "react-simple-star-rating";
+
+type item = {
+  category: string;
+  description: string;
+  id: string;
+  image: string;
+  price: number;
+  rating: number;
+  reduction: number;
+  stock: number;
+  title: string;
+};
 
 const Product = () => {
   const { productId } = useParams();
   const addItem = useCartStore((state) => state.addItem);
-  const handleAddItem = (product) => {
+  const handleAddItem = (product: any) => {
     // const newItem = {id : number}
+    console.log(product);
     const newItem = {
       productId: product.id,
       name: product.title,
@@ -64,6 +78,12 @@ const Product = () => {
             <p>{product.price} $</p>
             <p>{product.category}</p>
             <p>{product.description}</p>
+            <Rating
+              initialValue={product.rating}
+              readonly
+              allowFraction
+              size={25}
+            />
             <button onClick={handleAddItem(product)}>Ajouter au panier</button>
           </div>
         ))}

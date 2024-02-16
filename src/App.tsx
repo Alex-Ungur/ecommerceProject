@@ -8,20 +8,6 @@ import { useAuth } from "./context/AuthContext";
 // import useUserStore from "./stores/useUserStore";
 // import useLocalStorageUser from "./hooks/useLocalStorageUser";
 
-export type product = {
-  id: string;
-  title: string;
-  price: number;
-  category: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  promo: [];
-  description: string;
-  image: string;
-};
-
 const App = () => {
   // const { currentUser } = useAuth();
   // console.log(currentUser);

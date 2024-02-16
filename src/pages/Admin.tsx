@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../layout";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories, setProduct } from "../api/Products";
 import { storage } from "../firebase/firebase-config";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid4 } from "uuid";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 type CategoryData = {
   [id: string]: {
@@ -14,17 +16,22 @@ type CategoryData = {
 };
 
 const Admin = () => {
+  const { userLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
     category: "",
     description: "",
-    image: File,
+    image: "",
     price: 1,
-    promo: [0],
-    rating: {
-      count: 0,
-      rate: 0,
-    },
+    rating: 0,
+    // promo: [0],
+    // rating: {
+    //   count: 0,
+    //   rate: 0,
+    // },
+    reduction: 0,
+    stock: 0,
   });
   const [promotion, setPromotion] = useState(false);
   const {
@@ -37,6 +44,12 @@ const Admin = () => {
     queryKey: ["categories"],
     queryFn: async () => await getCategories(),
   });
+
+  useEffect(() => {
+    if (!userLoggedIn) {
+      navigate("/");
+    }
+  }, []);
 
   if (isLoading || isFetching || isRefetching) {
     return (
@@ -53,23 +66,48 @@ const Admin = () => {
     );
   }
 
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
+    const baseImage = e.target.files[0];
+    const imageName = baseImage.name + uuid4();
+    const imageRef = ref(storage, `produits/${imageName}`);
+
+    // console.log(baseImage);
+    // console.log(imageName);
+    // console.log(imageRef);
+    try {
+      await uploadBytes(imageRef, baseImage).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          setForm((prevForm) => ({ ...prevForm, image: url }));
+          console.log(url);
+        });
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleForm = async (e) => {
     e.preventDefault();
-    if (form.image) {
-      const imgName = form.image.name + uuid4();
-      const imageRef = ref(storage, `produits/${imgName}`);
-      try {
-        await uploadBytes(imageRef, form.image).then(() => {
-          alert("image uploadée");
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
     console.log("form", form);
     setProduct(form);
   };
-  console.log(categories);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+
+    if (!isNaN(value)) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        [e.target.name]: parseFloat(value),
+      }));
+    } else {
+      setForm((prevForm) => ({
+        ...prevForm,
+        [e.target.name]: e.target.value,
+      }));
+    }
+  };
 
   return (
     <Layout>
@@ -82,20 +120,28 @@ const Admin = () => {
           type="text"
           name="title"
           id="title"
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onChange={handleChange}
+          // onChange={(e) => setForm({ ...form, title: e.target.value })}
           value={form.title}
+          className="text-black"
         />
         <label htmlFor="category">Categorie</label>
         <select
-          className="py-1 px-2"
+          className="py-1 px-2 text-black"
           id="category"
           name="category"
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          value={form.category} // Assurez-vous de contrôler la valeur de la liste déroulante
+          // onChange={(e) => setForm({ ...form, category: e.target.value })}
+
+          onChange={handleChange}
+          value={form.category}
         >
           <option value="">Tous</option> {/* Option par défaut */}
           {categories?.map((category: any) => (
-            <option key={category.id} value={category.name}>
+            <option
+              key={category.id}
+              value={category.name}
+              className="text-black"
+            >
               {category.name}
             </option>
           ))}
@@ -107,7 +153,7 @@ const Admin = () => {
           id="image"
           name="image"
           accept="image/png, image/jpeg"
-          onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
+          onChange={(e) => handleImageUpload(e)}
         />
         <label htmlFor="description">Description du produit :</label>
 
@@ -117,20 +163,26 @@ const Admin = () => {
           rows={5}
           cols={33}
           placeholder="Description"
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
+          // onChange={(e) => setForm({ ...form, description: e.target.value })}
+
+          onChange={handleChange}
           defaultValue={form.description}
+          className="text-black"
         ></textarea>
         <label htmlFor="price">Prix :</label>
         <input
-          type="number"
+          type={"number"}
           id="price"
           name="price"
-          min="1.00"
-          max="10000.00"
-          step="0.10"
-          onChange={(e) =>
-            setForm({ ...form, price: parseFloat(e.target.value) })
-          }
+          min={1.0}
+          max={10000.0}
+          step={0.1}
+          className="text-black"
+          // onChange={(e) =>
+          //   setForm({ ...form, price: parseFloat(e.target.value) })
+          // }
+
+          onChange={handleChange}
         />
         <label htmlFor="promotion">Promotion :</label>
         <input
@@ -151,9 +203,12 @@ const Admin = () => {
               min={1}
               max={70}
               step={1}
-              onChange={(e) =>
-                setForm({ ...form, promo: [parseInt(e.target.value)] })
-              }
+              className="text-black"
+              // onChange={(e) =>
+              //   setForm({ ...form, promo: [parseInt(e.target.value)] })
+              // }
+
+              onChange={handleChange}
             />
           </>
         )}
@@ -166,15 +221,18 @@ const Admin = () => {
           min={1}
           max={10000}
           step={1}
-          onChange={(e) =>
-            setForm((prevForm) => ({
-              ...prevForm,
-              rating: {
-                ...prevForm.rating,
-                count: parseInt(e.target.value),
-              },
-            }))
-          }
+          className="text-black"
+          // onChange={(e) =>
+          //   setForm((prevForm) => ({
+          //     ...prevForm,
+          //     rating: {
+          //       ...prevForm.rating,
+          //       count: parseInt(e.target.value),
+          //     },
+          //   }))
+          // }
+
+          onChange={handleChange}
         />
 
         <input
