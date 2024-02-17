@@ -25,11 +25,6 @@ const Admin = () => {
     image: "",
     price: 1,
     rating: 0,
-    // promo: [0],
-    // rating: {
-    //   count: 0,
-    //   rate: 0,
-    // },
     reduction: 0,
     stock: 0,
   });

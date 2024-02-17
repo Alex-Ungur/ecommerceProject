@@ -3,37 +3,14 @@ import { useParams } from "react-router-dom";
 import Layout from "../layout";
 import { getProductFb } from "../api/Products";
 import { useQuery } from "@tanstack/react-query";
-import { useCartStore } from "../stores/useCartStore";
+// import { useCartStore } from "../stores/useCartStore";
+import { useCartStore } from "../stores/cart";
 import { Rating } from "react-simple-star-rating";
-
-type item = {
-  category: string;
-  description: string;
-  id: string;
-  image: string;
-  price: number;
-  rating: number;
-  reduction: number;
-  stock: number;
-  title: string;
-};
+import { IProduct } from "../types/product.types";
 
 const Product = () => {
   const { productId } = useParams();
-  const addItem = useCartStore((state) => state.addItem);
-  const handleAddItem = (product: any) => {
-    // const newItem = {id : number}
-    console.log(product);
-    const newItem = {
-      productId: product.id,
-      name: product.title,
-      image: product.image,
-      price: product.price,
-      quantity: 1,
-    };
-    addItem(newItem);
-  };
-
+  const { add: handleAddToCart } = useCartStore();
   const {
     isLoading,
     error,
@@ -67,26 +44,30 @@ const Product = () => {
   return (
     <>
       <Layout>
-        {productData?.map((product) => (
-          <div key={product.id}>
-            <img
-              src={product.image}
-              alt={`${product.title} image`}
-              className="max-w-[15rem]"
-            />
-            <p>{product.title}</p>
-            <p>{product.price} $</p>
-            <p>{product.category}</p>
-            <p>{product.description}</p>
-            <Rating
-              initialValue={product.rating}
-              readonly
-              allowFraction
-              size={25}
-            />
-            <button onClick={handleAddItem(product)}>Ajouter au panier</button>
-          </div>
-        ))}
+        {productData?.length
+          ? (productData as IProduct[])?.map((product: IProduct) => (
+              <div key={product.id}>
+                <img
+                  src={product.image}
+                  alt={`${product.title} image`}
+                  className="max-w-[15rem]"
+                />
+                <p>{product.title}</p>
+                <p>{product.price} $</p>
+                <p>{product.category}</p>
+                <p>{product.description}</p>
+                <Rating
+                  initialValue={product.rating}
+                  readonly
+                  allowFraction
+                  size={25}
+                />
+                <button onClick={() => handleAddToCart(product)}>
+                  Ajouter au panier
+                </button>
+              </div>
+            ))
+          : "Aucun produit trouvé"}
       </Layout>
     </>
   );

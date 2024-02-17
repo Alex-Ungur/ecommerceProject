@@ -1,23 +1,6 @@
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
-
-export interface Product {
-    category: string
-    description: string
-    price: number
-    image: string
-    promo: number
-    rating : number
-    stock : number
-    // rating : {
-    //     count : number,
-    //     rate : number
-    // }
-    reduction : number
-    title: string
-  }
-  
-
+import { IProduct } from "../types/product.types";
 
 
 // export const getProducts = async () => {
@@ -66,14 +49,14 @@ export const getCategories = async () => {
     return (categoriesList.docs.map((category) => ({...category.data(), id : category.id})));    
 }
 
-export const setProduct = async (data : Product) => {
+export const setProduct = async (data : IProduct) => {
     const setProductData = await addDoc(collection(db, "produits"), {
         category : data.category,
         description : data.description,
         image : data.image,
         price : data.price,
-        reduction : data.reduction,
         rating : data.rating,
+        reduction : data.reduction,
         stock : data.stock,
         // rating : {count : data.rating.count, rate : data.rating.rate},
         title : data.title
@@ -82,10 +65,10 @@ export const setProduct = async (data : Product) => {
     return setProductData;
 }
 
-export const setCart = async (id: string, data : Cart) => {
-    const setCartData = await addDoc(collection(db, "panier"), {
+// export const setCart = async (id: string, data : Cart) => {
+//     const setCartData = await addDoc(collection(db, "panier"), {
 
-    });
+//     });
 
-    return setCartData;
-}
+//     return setCartData;
+// }

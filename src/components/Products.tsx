@@ -1,21 +1,13 @@
-import { product } from "../App";
-import { Link } from "react-router-dom";
-import { useCartStore } from "../stores/useCartStore";
+// import { useCartStore } from "../stores/useCartStore";
 import { useQuery } from "@tanstack/react-query";
-import { Product, getProductsFb } from "../api/Products";
+import { getProductsFb } from "../api/Products";
 import { useMemo, useState } from "react";
-import { Rating } from "react-simple-star-rating";
+import { IProduct } from "../types/product.types";
+import ProductItem from "./ProductItem";
 
 const Products = () => {
-  const addItem = useCartStore((state) => state.addItem);
   const [searchFilter, setSearchFilter] = useState("");
-  // const [isHovered, setIsHovered] = useState(false);
   const [searchCategoryFilter, setSearchCategoryFilter] = useState("");
-
-  // const style = {
-  //   transform: isHovered ? `translate(5px, 5px)` : "",
-  //   transition: `transform 0.3s`,
-  // };
 
   const {
     data: productsFBDb,
@@ -28,22 +20,11 @@ const Products = () => {
     queryFn: async () => await getProductsFb(),
   });
 
-  // const {
-  //   isLoading,
-  //   isFetching,
-  //   isRefetching,
-  //   error,
-  //   data: productList,
-  // } = useQuery({
-  //   queryKey: ["productList"],
-  //   queryFn: async () => await getProducts(),
-  // });
-
   // Créer un ensemble de catégories uniques à partir de la productList
   const uniqueCategories: string[] = useMemo(() => {
     if (!productsFBDb) return [];
     const categories: string[] = [];
-    productsFBDb.forEach((productItem: Product) => {
+    (productsFBDb as IProduct[]).forEach((productItem: IProduct) => {
       if (!categories.includes(productItem.category)) {
         categories.push(productItem.category);
       }
@@ -67,21 +48,24 @@ const Products = () => {
   }
 
   // Filtrer les produits en fonction de la catégorie sélectionnée
-  const filteredProducts = productsFBDb?.filter((productItem: any) => {
-    const matchesSearchFilter = productItem.title
-      .toLowerCase()
-      .includes(searchFilter.toLowerCase());
+  const filteredProducts = (productsFBDb as IProduct[])?.filter(
+    (productItem: IProduct) => {
+      const matchesSearchFilter = productItem.title
+        .toLowerCase()
+        .includes(searchFilter.toLowerCase());
 
-    // Si une catégorie est sélectionnée, filtrer également par catégorie
-    const matchesCategoryFilter =
-      !searchCategoryFilter || // Si aucune catégorie n'est sélectionnée, inclure tous les produits
-      productItem.category.toLowerCase() === searchCategoryFilter.toLowerCase();
+      // Si une catégorie est sélectionnée, filtrer également par catégorie
+      const matchesCategoryFilter =
+        !searchCategoryFilter || // Si aucune catégorie n'est sélectionnée, inclure tous les produits
+        productItem.category.toLowerCase() ===
+          searchCategoryFilter.toLowerCase();
 
-    return matchesSearchFilter && matchesCategoryFilter;
-  });
+      return matchesSearchFilter && matchesCategoryFilter;
+    }
+  );
 
-  console.log(productsFBDb);
-  console.log(filteredProducts);
+  // console.log(productsFBDb);
+  // console.log(filteredProducts);
   //TODO : Rating
   return (
     <>
@@ -102,69 +86,21 @@ const Products = () => {
           <select
             className="py-1 px-2 text-black"
             onChange={(e) => setSearchCategoryFilter(e.target.value)}
-            value={searchCategoryFilter} // Assurez-vous de contrôler la valeur de la liste déroulante
+            value={searchCategoryFilter}
           >
             <option value="">Tous</option> {/* Option par défaut */}
-            {uniqueCategories?.map(
-              (category: string) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              )
-              // console.log(category)
-            )}
+            {uniqueCategories?.map((category: string) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
         </div>
       </div>
-      <ul className="grid grid-cols-3 gap-5">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {filteredProducts && filteredProducts.length > 0
-          ? filteredProducts?.map((productItem: any) => (
-              <li
-                key={productItem.id}
-                className="h-full w-full border border-rose-500 p-4"
-                // onMouseEnter={() => setIsHovered(true)}
-                // onMouseLeave={() => setIsHovered(false)}
-                // style={style}
-              >
-                <Link
-                  to={`/product/${productItem.id}`}
-                  className="flex flex-col gap-2"
-                >
-                  <img
-                    src={productItem.image}
-                    alt={`${productItem.title} image`}
-                    className="max-w-[12rem]"
-                  />
-                  <p>{productItem.title}</p>
-                  <p>{productItem.price} $</p>
-                  <p>{productItem.category}</p>
-                  {productItem.rating != 0 && (
-                    <Rating
-                      initialValue={productItem.rating}
-                      readonly
-                      allowFraction
-                      size={25}
-                    />
-                  )}
-
-                  {/* <p>{productItem.description}</p> */}
-                </Link>
-                <button
-                  onClick={() => {
-                    const newItem = {
-                      productId: productItem.id,
-                      name: productItem.title,
-                      image: productItem.image,
-                      price: productItem.price,
-                      quantity: 1,
-                    };
-                    console.log(newItem);
-                    addItem(newItem);
-                  }}
-                >
-                  Ajouter au panier
-                </button>
-              </li>
+          ? (filteredProducts as IProduct[])?.map((productItem: IProduct) => (
+              <ProductItem key={productItem.id} productItem={productItem} />
             ))
           : "Aucun produit ne correspond à votre recherche..."}
       </ul>

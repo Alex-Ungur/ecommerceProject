@@ -1,17 +1,13 @@
 import { Link } from "react-router-dom";
-import { useCartStore } from "../stores/useCartStore";
-// import useUserStore from "../stores/useUserStore";
-import { auth } from "../firebase/firebase-config";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { logout } from "../firebase/auth";
+import { useCartStore } from "../stores/cart";
 
 const Header = () => {
-  // const items = useCartStore((state) => state.items);
-  const quantity = useCartStore((state) => state.totalQuantity());
+  const { count } = useCartStore();
   const { currentUser, loading } = useAuth();
-  const [user, setUser] = useState(currentUser);
-  // const userData = useUserStore((state) => state.userData);
+  const [user, setUser] = useState(currentUser || null);
 
   const handleLogout = async () => {
     try {
@@ -21,8 +17,6 @@ const Header = () => {
       console.error(error);
     }
   };
-
-  console.log(quantity);
 
   useEffect(() => {
     setUser(currentUser);
@@ -35,7 +29,7 @@ const Header = () => {
       </Link>
       <div className="">
         <Link to={"/cart"}>
-          Panier{quantity && quantity > 0 && <span>{quantity}</span>}
+          Panier {count() !== 0 && <span>{count()}</span>}
         </Link>
       </div>
       {user ? (
