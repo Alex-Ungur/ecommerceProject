@@ -3,14 +3,12 @@ import { useParams } from "react-router-dom";
 import Layout from "../layout";
 import { getProductFb } from "../api/Products";
 import { useQuery } from "@tanstack/react-query";
-// import { useCartStore } from "../stores/useCartStore";
-import { useCartStore } from "../stores/cart";
-import { Rating } from "react-simple-star-rating";
 import { IProduct } from "../types/product.types";
+import ProductItem from "../components/ProductItem";
 
 const Product = () => {
   const { productId } = useParams();
-  const { add: handleAddToCart } = useCartStore();
+  // const { add: handleAddToCart } = useCartStore();
   const {
     isLoading,
     error,
@@ -44,30 +42,19 @@ const Product = () => {
   return (
     <>
       <Layout>
-        {productData?.length
-          ? (productData as IProduct[])?.map((product: IProduct) => (
-              <div key={product.id}>
-                <img
-                  src={product.image}
-                  alt={`${product.title} image`}
-                  className="max-w-[15rem]"
-                />
-                <p>{product.title}</p>
-                <p>{product.price} $</p>
-                <p>{product.category}</p>
-                <p>{product.description}</p>
-                <Rating
-                  initialValue={product.rating}
-                  readonly
-                  allowFraction
-                  size={25}
-                />
-                <button onClick={() => handleAddToCart(product)}>
-                  Ajouter au panier
-                </button>
-              </div>
+        <ul className="my-[8rem]">
+          {productData?.length ? (
+            (productData as IProduct[])?.map((product: IProduct) => (
+              <ProductItem
+                key={product.id}
+                productItem={product}
+                list={false}
+              />
             ))
-          : "Aucun produit trouvé"}
+          ) : (
+            <li>"Aucun produit trouvé"</li>
+          )}
+        </ul>
       </Layout>
     </>
   );

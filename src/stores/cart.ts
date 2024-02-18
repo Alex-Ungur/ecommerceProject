@@ -12,7 +12,8 @@ type CartStore = {
     count: () => number;
     add: (product: IProduct) => void,
     remove: (idProduct: string) => void,
-    removeAll: () => void
+    removeAll: () => void,
+    totalPrice : () => number
 }
 
 export const useCartStore = create<CartStore>((set, get) => ({
@@ -23,17 +24,29 @@ export const useCartStore = create<CartStore>((set, get) => ({
             return cart.map(item => item.count).reduce((prev, curr) => prev + curr);
         return 0;
     },
+    
     add: (product: IProduct) => {
         const { cart } = get();
         const updatedCart = updateCart(product, cart)
         set({ cart: updatedCart });
     },
+
     remove: (idProduct: string) => {
         const { cart } = get();
         const updatedCart = removeCart(idProduct, cart);
         set({ cart: updatedCart });
     },
     removeAll: () => set({ cart: [] }),
+
+    totalPrice: () => {
+        const { cart } = get();
+        return cart.reduce((total, cartItem) => {
+          const itemPrice = cartItem.reduction !== 0
+            ? cartItem.price - cartItem.price * (cartItem.reduction / 100)
+            : cartItem.price;
+          return total + itemPrice * cartItem.count;
+        }, 0);
+      },
 }));
 
 function updateCart(product: IProduct, cart: CartItem[]): CartItem[] {
@@ -62,7 +75,7 @@ function removeCart(idProduct: string, cart: CartItem[]): CartItem[] {
         return item.count;
     });
 }
-
+  
 // Abonnement aux changements dans le panier et sauvegarde dans le localStorage
 useCartStore.subscribe((cart) => {
     localStorage.setItem("cart", JSON.stringify(cart));

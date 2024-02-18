@@ -87,7 +87,7 @@ const Login = () => {
           <div className="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               {(errorMessage?.errorCode || errorMessage?.errorMessage) && (
-                <h2>{errorMessage.errorMessage}</h2>
+                <h2 className="text-red-500">{errorMessage.errorMessage}</h2>
               )}
 
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-white">

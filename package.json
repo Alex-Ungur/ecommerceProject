@@ -20,6 +20,7 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.21.3",
     "react-simple-star-rating": "^5.1.7",
+    "react-toastify": "^10.0.4",
     "uuid": "^9.0.1",
     "zustand": "^4.5.0"
   },

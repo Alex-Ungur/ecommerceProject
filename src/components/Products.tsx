@@ -71,7 +71,7 @@ const Products = () => {
     <>
       <div className="flex gap-2 items-center mb-4">
         <div className="">
-          <label htmlFor="site-search" className="mr-1">
+          <label htmlFor="site-search" className="mr-1 text-black">
             Rechercher un produit
           </label>
           <input
@@ -97,12 +97,14 @@ const Products = () => {
           </select>
         </div>
       </div>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 p-3 rounded">
         {filteredProducts && filteredProducts.length > 0
           ? (filteredProducts as IProduct[])?.map((productItem: IProduct) => (
               <ProductItem key={productItem.id} productItem={productItem} />
             ))
-          : "Aucun produit ne correspond à votre recherche..."}
+          : searchFilter
+          ? "Aucun produit ne correspond à votre recherche..."
+          : "Aucun produit disponible à afficher"}
       </ul>
     </>
   );

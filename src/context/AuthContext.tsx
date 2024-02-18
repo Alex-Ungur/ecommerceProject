@@ -11,7 +11,13 @@ import { auth } from "../firebase/firebase-config";
 interface Props {
   children?: ReactNode;
 }
-export const AuthContext = createContext(null);
+
+interface IAuth {
+  currentUser: User | null;
+  userLoggedIn: boolean;
+  loading: boolean;
+}
+export const AuthContext = createContext<IAuth | null>(null);
 
 export function useAuth() {
   return useContext(AuthContext);
