@@ -69,8 +69,8 @@ const Products = () => {
   //TODO : Rating
   return (
     <>
-      <div className="flex gap-2 items-center mb-4">
-        <div className="">
+      <div className="flex flex-col sm:flex-row gap-2 sm:items-center mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center">
           <label htmlFor="site-search" className="mr-1 text-black">
             Rechercher un produit
           </label>
@@ -82,9 +82,9 @@ const Products = () => {
             onChange={(e) => setSearchFilter(e.target.value)}
           />
         </div>
-        <div>
+        <div className="flex">
           <select
-            className="py-1 px-2 text-black"
+            className="py-1 px-2 text-black w-full"
             onChange={(e) => setSearchCategoryFilter(e.target.value)}
             value={searchCategoryFilter}
           >
