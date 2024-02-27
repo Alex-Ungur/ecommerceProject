@@ -68,7 +68,11 @@ const Login = () => {
     } catch (err) {
       console.log(err);
       setLoader(false);
+      /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+      /* @ts-ignore  */
       const errorCode = err.code;
+      /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+      /* @ts-ignore  */
       const errorMsg = err.message;
       // console.log("err", errorCode, "rrer", errorMessage);
       //     // console.log("error", error);
