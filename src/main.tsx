@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/ecommerceProject",
     element: <App />,
     errorElement: <ErrorPage />,
     children: [],

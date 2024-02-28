@@ -28,7 +28,7 @@ const Header = () => {
         <div className="order-1 md:order-2">
           <Link
             className="flex items-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl "
-            to="/"
+            to="/ecommerceProject/"
           >
             <svg
               className="fill-current text-gray-800 mr-2"
