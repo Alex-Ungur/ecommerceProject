@@ -15,7 +15,11 @@ export default function ErrorPage() {
         <h2 className="text-[2rem]">Oups !</h2>
         <p>Une erreur s'est produite :</p>
         <p>
-          <i>{error.statusText || error.message}</i>
+          <i>
+            {error?.statusText ||
+              error?.message ||
+              "le serveur n'a pas pu répondre"}
+          </i>
         </p>
       </div>
     </Layout>
