@@ -108,7 +108,7 @@ const Cart = () => {
   return (
     <>
       <Layout>
-        <p>{"Le panier est vide"}</p>
+        <p className="text-black">{"Votre panier est vide"}</p>
       </Layout>
     </>
   );
