@@ -9,4 +9,5 @@ export interface IProduct {
     reduction : number;
     stock : number;
     title : string;
+    brand : string;
 }
