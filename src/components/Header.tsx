@@ -5,7 +5,7 @@ import { logout } from "../firebase/auth";
 import { useCartStore } from "../stores/cart";
 
 const Header = () => {
-  const { count } = useCartStore();
+  const { qty } = useCartStore();
   const { currentUser, loading } = useAuth();
   const [user, setUser] = useState(currentUser || null);
 
@@ -111,9 +111,9 @@ const Header = () => {
               <circle cx="10.5" cy="18.5" r="1.5" />
               <circle cx="17.5" cy="18.5" r="1.5" />
             </svg>
-            {count() !== 0 && (
+            {qty() !== 0 && (
               <span className="absolute top-[-.2rem] left-[2.2rem] text-sm bg-red">
-                {count()}
+                {qty()}
               </span>
             )}
           </Link>

@@ -4,6 +4,7 @@ import { getProductsFb } from "../api/Products";
 import { useMemo, useState } from "react";
 import { IProduct } from "../types/product.types";
 import ProductItem from "./ProductItem";
+import Loader from "./ui/Loader";
 
 const Products = () => {
   const [searchFilter, setSearchFilter] = useState("");
@@ -33,16 +34,12 @@ const Products = () => {
   }, [productsFBDb]);
 
   if (isLoading || isFetching || isRefetching) {
-    return (
-      <>
-        <p>Chargement...</p>
-      </>
-    );
+    return <Loader />;
   }
   if (error) {
     return (
       <>
-        <p>Une erreur s'est produite</p>
+        <p className="text-red-500 text-center">Une erreur s'est produite</p>
       </>
     );
   }

@@ -1,6 +1,6 @@
 export interface IProduct {
     id : string;
-    count : number;
+    // count : number;
     category : string;
     description : string;
     image : string;
@@ -10,4 +10,5 @@ export interface IProduct {
     stock : number;
     title : string;
     brand : string;
+    qty : number;
 }

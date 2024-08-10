@@ -4,12 +4,12 @@ import { IProduct } from '../types/product.types';
 
 
 interface CartItem extends IProduct {
-    count: number;
+    qty: number;
 }
 
 type CartStore = {
     cart: CartItem[],
-    count: () => number;
+    qty: () => number;
     add: (product: IProduct) => void,
     remove: (idProduct: string) => void,
     removeAll: () => void,
@@ -18,14 +18,15 @@ type CartStore = {
 
 export const useCartStore = create<CartStore>((set, get) => ({
     cart: [],
-    count: () => {
+    qty: () => {
         const { cart } = get();
         if (cart.length)
-            return cart.map(item => item.count).reduce((prev, curr) => prev + curr);
+            return cart.map(item => item.qty).reduce((prev, curr) => prev + curr);
         return 0;
     },
     
     add: (product: IProduct) => {
+        if(product.qty === undefined) product.qty = 1;
         const { cart } = get();
         const updatedCart = updateCart(product, cart)
         set({ cart: updatedCart });
@@ -44,21 +45,21 @@ export const useCartStore = create<CartStore>((set, get) => ({
           const itemPrice = cartItem.reduction !== 0
             ? cartItem.price - cartItem.price * (cartItem.reduction / 100)
             : cartItem.price;
-          return total + itemPrice * cartItem.count;
+          return total + itemPrice * cartItem.qty;
         }, 0);
       },
 }));
 
 function updateCart(product: IProduct, cart: CartItem[]): CartItem[] {
-    const cartItem = { ...product, count: 1 } as CartItem;
+    const cartItem = { ...product, qty: product.qty } as CartItem;
 
     const productOnCart = cart.map(item => item.id).includes(product.id);
     
-    if (!productOnCart) cart.push(cartItem)
+    if (!productOnCart) cart.push(cartItem);
     else {
         return cart.map(item => {
             if (item.id === product.id)
-                return { ...item, count: item.count + 1 } as CartItem;
+                return { ...item, qty: item.qty + 1 } as CartItem;
             return item
         })        
     }
@@ -69,10 +70,10 @@ function updateCart(product: IProduct, cart: CartItem[]): CartItem[] {
 function removeCart(idProduct: string, cart: CartItem[]): CartItem[] {
     return cart.map(item => {
         if (item.id === idProduct)
-            return { ...item, count: item.count - 1 }
+            return { ...item, qty: item.qty - 1 }
         return item;
     }).filter(item => {
-        return item.count;
+        return item.qty;
     });
 }
   
