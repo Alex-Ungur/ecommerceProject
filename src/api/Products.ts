@@ -59,7 +59,7 @@ export const setProduct = async (data : IProduct) => {
         reduction : data.reduction,
         stock : data.stock,
         // rating : {count : data.rating.count, rate : data.rating.rate},
-        title : data.title
+        title : data.title,
     });
 
     return setProductData;

@@ -15,7 +15,6 @@ const Cart = () => {
   const { cart, remove, removeAll, totalPrice } = useCartStore();
 
   // console.log(cartList);
-  console.log(cart);
 
   // if (cartList.length > 0) {
   if (cart.length > 0) {
@@ -49,7 +48,7 @@ const Cart = () => {
                   <p className="lg:w-[20rem]">{cartItem.title}</p>
                 </Link>
                 <div className="grid gap-2 lg:ml-auto">
-                  <p>Quantité : {cartItem.count}</p>
+                  <p>Quantité : {cartItem.qty}</p>
                   {cartItem.reduction != 0 ? (
                     <>
                       <p className="line-through">{cartItem.price} €</p>
@@ -80,9 +79,9 @@ const Cart = () => {
                       ? (
                           (cartItem.price -
                             cartItem.price * (cartItem.reduction / 100)) *
-                          cartItem.count
+                          cartItem.qty
                         ).toFixed(1)
-                      : (cartItem.price * cartItem.count).toFixed(1)}{" "}
+                      : (cartItem.price * cartItem.qty).toFixed(1)}{" "}
                     €
                   </p>
                 </div>

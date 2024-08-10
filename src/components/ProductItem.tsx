@@ -21,21 +21,28 @@ const ProductItem = ({
   const handleQtyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (parseInt(e.target.value) < 1) {
       setQty(1);
+      productItem.qty = 1;
     } else {
       setQty(parseInt(e.target.value));
+      productItem.qty = parseInt(e.target.value);
     }
   };
 
   const handleQtyIncrement = () => {
     if (isNaN(qty) || qty === null || qty === undefined) {
       setQty(1);
+      productItem.qty = 1;
     } else {
       setQty(qty + 1);
+      productItem.qty = qty + 1;
     }
   };
 
   const handleQtyDecrement = () => {
-    if (qty > 1) setQty(qty - 1);
+    if (qty > 1) {
+      setQty(qty - 1);
+      productItem.qty = qty - 1;
+    }
   };
 
   const style = {
@@ -51,7 +58,9 @@ const ProductItem = ({
 
   const productLink = list ? (
     <li
-      className="h-full w-full p-4 shadow-xl"
+      className={`h-full w-full p-4 shadow-xl ${
+        productItem.stock === 0 && "opacity-70"
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={listItemStyle}
@@ -77,6 +86,7 @@ const ProductItem = ({
           )}
         </div>
         {productItem?.brand && <p>{productItem.brand}</p>}
+        <p>{productItem.category}</p>
         <p>{productItem.title}</p>
         {productItem.reduction != 0 ? (
           <>
@@ -92,9 +102,9 @@ const ProductItem = ({
         ) : (
           <p>{productItem.price} €</p>
         )}
-        <p>{productItem.category}</p>
       </Link>
-      <div className="mt-auto">
+
+      <div className="mt-auto flex flex-col gap-4">
         {productItem.rating !== 0 && (
           <div className="mt-2 h-max">
             <Rating
@@ -105,13 +115,45 @@ const ProductItem = ({
             />
           </div>
         )}
-        <button onClick={() => handleAddToCart(productItem)} className="mt-2">
-          Ajouter au panier
+        <div
+          className={`flex items-center w-full ${
+            productItem.stock === 0 && "pointer-events-none opacity-50"
+          }`}
+        >
+          <button
+            className="p-3 min-w-[3rem] text-orange-300 border-none bg-gray-200 rounded-r-none rounded-br-none"
+            onClick={handleQtyDecrement}
+          >
+            -
+          </button>
+          <input
+            type="number"
+            value={qty}
+            onChange={handleQtyChange}
+            className="text-black border-none w-20 bg-gray-200 p-3 text-center w-full"
+          />
+          <button
+            className="p-3 min-w-[3rem] text-orange-300 border-none bg-gray-200 rounded-l-none	rounded-bl-none"
+            onClick={handleQtyIncrement}
+          >
+            +
+          </button>
+        </div>
+        <button
+          onClick={() => handleAddToCart(productItem)}
+          className={`mt-auto border-none w-full p-3 bg-orange-400 ${
+            productItem.stock === 0
+              ? "bg-gray-400 cursor-not-allowed text-white"
+              : "text-black "
+          }`}
+          disabled={productItem.stock === 0}
+        >
+          {productItem.stock === 0 ? "Rupture de stock" : "Ajouter au panier"}
         </button>
       </div>
     </li>
   ) : (
-    <li className="h-full w-full border shadow-2xl max-w-[50rem] m-auto p-4 relative">
+    <li className="h-full w-full border shadow-2xl max-w-[75rem] m-auto p-4 relative">
       {/* {productItem.reduction != 0 && (
         <p className="text-white bg-red-500 font-bold absolute py-1 px-3 rounded">
           {productItem.reduction}% de promo !
@@ -123,7 +165,7 @@ const ProductItem = ({
             <img
               src={productItem.image}
               alt={`${productItem.title} image`}
-              className="aspect-[4/2] object-contain"
+              className="aspect-[1/1] object-contain"
             />
           ) : (
             <img src={PlaceHolderImage} alt="" />
@@ -165,32 +207,45 @@ const ProductItem = ({
           ) : (
             <p>{productItem.price} €</p>
           )}
-          <div className="flex items-center">
-            <button
-              className="p-2 text-orange-300 border-none bg-gray-200 rounded-r-none rounded-br-none"
-              onClick={handleQtyDecrement}
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
+            <div
+              className={`flex items-center w-full ${
+                productItem.stock === 0 && "pointer-events-none opacity-50"
+              }`}
             >
-              -
-            </button>
-            <input
-              type="number"
-              value={qty}
-              onChange={handleQtyChange}
-              className="text-black border-none w-20 bg-gray-200 p-2 text-center"
-            />
+              <button
+                className="p-3 min-w-[3rem] text-orange-300 border-none bg-gray-200 rounded-r-none rounded-br-none"
+                onClick={handleQtyDecrement}
+              >
+                -
+              </button>
+              <input
+                type="number"
+                value={qty}
+                onChange={handleQtyChange}
+                className="text-black border-none w-20 bg-gray-200 p-3 text-center w-full"
+              />
+              <button
+                className="p-3 min-w-[3rem] text-orange-300 border-none bg-gray-200 rounded-l-none	rounded-bl-none"
+                onClick={handleQtyIncrement}
+              >
+                +
+              </button>
+            </div>
             <button
-              className="p-2 text-orange-300 border-none bg-gray-200 rounded-l-none	rounded-bl-none"
-              onClick={handleQtyIncrement}
+              onClick={() => handleAddToCart(productItem)}
+              className={`mt-auto border-none w-full p-3 bg-orange-400 ${
+                productItem.stock === 0
+                  ? "bg-gray-400 opacity-50 text-white"
+                  : "text-black"
+              }`}
+              disabled={productItem.stock === 0}
             >
-              +
+              {productItem.stock === 0
+                ? "Rupture de stock"
+                : "Ajouter au panier"}
             </button>
           </div>
-          <button
-            onClick={() => handleAddToCart(productItem)}
-            className="text-white mt-auto"
-          >
-            Ajouter au panier
-          </button>
         </div>
       </div>
     </li>

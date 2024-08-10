@@ -5,6 +5,7 @@ import { getProductFb } from "../api/Products";
 import { useQuery } from "@tanstack/react-query";
 import { IProduct } from "../types/product.types";
 import ProductItem from "../components/ProductItem";
+import Loader from "../components/ui/Loader";
 
 const Product = () => {
   const { productId } = useParams();
@@ -25,14 +26,14 @@ const Product = () => {
   if (isLoading || isFetching || isRefetching) {
     return (
       <Layout>
-        <p>Loading...</p>
+        <Loader />
       </Layout>
     );
   }
   if (error) {
     return (
       <Layout>
-        <p>Une erreur s'est produite</p>
+        <p className="text-red-500 text-center">Une erreur s'est produite</p>
       </Layout>
     );
   }
