@@ -1,5 +1,3 @@
-import React from "react";
-
 const Loader = () => {
   return (
     <div role="status" className="flex items-center justify-center">
